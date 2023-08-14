@@ -32,7 +32,7 @@ def main_menu(screen):
 
     # font type for the main menu buttons
     font_type = pygame.font.SysFont("impact", 40)
-    button_click_sound = 'static'
+    button_click_sound = 'audio'
 
     # start button initialization
     start_button_surface = font_type.render("Start", 0, (255, 255, 255), (51, 51, 51))
@@ -69,7 +69,7 @@ def main_menu(screen):
                     instructions_button_surface = font_type.render("Instructions", 0, (255, 0, 0), (51, 51, 51))
                     instructions_button_rectangle = instructions_button_surface.get_rect(center=((1280 // 3) * 2, 480))
                     screen.blit(instructions_button_surface, instructions_button_rectangle)
-                    clicky = pygame.mixer.Sound(os.path.join(button_click_sound, 'click-21156.mp3'))
+                    clicky = pygame.mixer.Sound(os.path.join(button_click_sound, 'hoverClick.mp3'))
                     pygame.mixer.Sound.play(clicky)
 
                 else:
@@ -86,7 +86,7 @@ def main_menu(screen):
                     start_button_surface = font_type.render("Start", 0, (255, 0, 0), (51, 51, 51))
                     start_button_rectangle = start_button_surface.get_rect(center=((1280 // 3), 480))
                     screen.blit(start_button_surface, start_button_rectangle)
-                    clicky = pygame.mixer.Sound(os.path.join(button_click_sound, 'click-21156.mp3'))
+                    clicky = pygame.mixer.Sound(os.path.join(button_click_sound, 'hoverClick.mp3'))
                     pygame.mixer.Sound.play(clicky)
                 else:
                     start_button_surface = font_type.render("Start", 0, (255, 255, 255), (51, 51, 51))
