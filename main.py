@@ -32,7 +32,12 @@ def main_menu(screen):
 
     # font type for the main menu buttons
     font_type = pygame.font.SysFont("impact", 40)
+
+    # setting up audio for button hover and main menu audio (can be changed later)
     button_click_sound = 'audio'
+    main_menu_sound = pygame.mixer.Sound("audio/main_menu_audio.mp3")
+    pygame.mixer.Sound.set_volume(main_menu_sound, 0.25)
+    pygame.mixer.Sound.play(main_menu_sound, loops=-1)
 
     # start button initialization
     start_button_surface = font_type.render("Start", 0, (255, 255, 255), (51, 51, 51))
@@ -60,7 +65,7 @@ def main_menu(screen):
                 elif start_button_rectangle.collidepoint(event.pos):
                     return "start"
 
-            # When user hovers over instructions, changes to red, else returns to normal
+            # When user hovers over instructions, changes to red, else returns to normal, click noise on button contact
             instructions_button_collide_old = instructions_button_collide
             instructions_button_collide = instructions_button_rectangle.collidepoint(pygame.mouse.get_pos())
 
@@ -77,7 +82,7 @@ def main_menu(screen):
                     instructions_button_rectangle = instructions_button_surface.get_rect(center=((1280 // 3) * 2, 480))
                     screen.blit(instructions_button_surface, instructions_button_rectangle)
 
-            # When user hovers over start, changes to red, else returns to normal
+            # When user hovers over start, changes to red, else returns to normal, click noise on button contact
             start_button_collide_old = start_button_collide
             start_button_collide = start_button_rectangle.collidepoint(pygame.mouse.get_pos())
 
