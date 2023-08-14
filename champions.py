@@ -21,4 +21,4 @@ class Champions:
     def reset_speed(self):
         self.strength = self.default_strength
 
-    def update_
+    # def update_
