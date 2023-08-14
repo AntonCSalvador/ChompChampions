@@ -18,7 +18,15 @@ class Player:
 # def animate():
 #     requestAnimationFrame(animate)
 
+class Projectile:
+    def __init__(self, x, y, velocity):
+        self.start_position = (x,y)
+        self.current_position = self.start_position
+        self.velocity = velocity
 
+
+    def move(self, dx, dy, velocity):
+        self.current_position = (self.current_position[0] + dx, self.current_position[1] + dy)
 
 class Floor:
     def __init__(self, x, y, width, height):
@@ -36,6 +44,9 @@ clock = pygame.time.Clock()
 player1 = Player(100, 400)
 player2 = Player(400, 400)
 floor = Floor(0, 550, 800, 50)  # Creating a floor rectangle
+
+projectiles = []  # List to store active projectiles
+
 
 running = True
 while running:
@@ -65,6 +76,8 @@ while running:
         #move player1 to the right    
     keys = pygame.key.get_pressed()
     # Move player1 up in the y-axis
+
+    #player 1 movement
     if keys[pygame.K_w]:
         player1.move(0, -20)
     if keys[pygame.K_d]:  # Move player1 to the right
@@ -74,6 +87,18 @@ while running:
     if keys[pygame.K_a]:  # Move player1 to the right
         player1.move(-2, 0)  # Positive dx value moves character to the right
 
+    if keys[pygame.K_r]:
+        #might need to + the pixels of the player to current positions
+        throw = Projectile(player1.current_position[0],player1.current_position[1], 2)
+        projectiles.append(throw)  # Add the new projectile to the list
+        print("projectile thrown")
+
+    # Move and draw projectiles
+    for projectile in projectiles:
+        projectile.move(projectile.velocity, 0, 2)  # Move projectile horizontally
+        pygame.draw.circle(screen, (255, 255, 0), projectile.current_position, 10)  # Draw the projectile
+
+    #player 2 movement
     if keys[pygame.K_UP]:  # Move player1 up in the y-axis
         player2.move(0, -20)  # Negative dy value moves character upward
     if keys[pygame.K_RIGHT]:  # Move player1 to the right
@@ -93,7 +118,7 @@ while running:
     pygame.draw.rect(screen, (255, 0, 0), player1_rect)
     pygame.draw.rect(screen, (0, 0, 255), player2_rect)
 
-
+    
 
 
 
