@@ -65,6 +65,10 @@ health_bar1 = HealthBar(10, 10, 300, 40, 100)
 
 projectiles = []  # List to store active projectiles
 
+gravity = 0.25
+player1_movement = 400
+player1_velocity = 0  # New variable to track the vertical velocity of player1
+
 running = True
 while running:
     for event in pygame.event.get():
@@ -81,20 +85,36 @@ while running:
     # Check for collisions and apply gravity
     if player1.current_position[1] + 40 <= floor.rect.y:  # Adjusted for character's height
         player1.current_position = (player1.current_position[0], floor.rect.y - 40)  # Set character on top of the floor
+        player1_velocity = 0  # Reset velocity when player1 is on the ground
+
     else:
         player1.move(0, 2)  # Apply gravity to player1
+        player1_velocity += gravity  # Apply gravity to player1
+
 
     if player2.current_position[1] + 40 <= floor.rect.y:  # Adjusted for character's height
         player2.current_position = (player2.current_position[0], floor.rect.y - 40)  # Set character on top of the floor
     else:
         player2.move(0, 2)  # Apply gravity to player2
 
+
+
+
     # Move and draw player objects
     keys = pygame.key.get_pressed()
 
     # Player 1 movement
     if keys[pygame.K_w]:
-        player1.move(0, -20)
+        player1_velocity -= 1.5
+    else:
+        player1_velocity = 0
+
+    player1_movement += player1_velocity  # Update vertical position based on velocity
+    player1_movement += gravity
+    player1_movement = max(player1_movement, 0)  # Ensure the player stays within screen bounds
+
+    player1.move(0, player1_movement - player1.current_position[1])  # Update player1's vertical position
+
     if keys[pygame.K_d]:  # Move player1 to the right
         player1.move(2, 0)  # Positive dx value moves character to the right
     if keys[pygame.K_a]:  # Move player1 to the left
@@ -142,6 +162,7 @@ while running:
     pygame.draw.rect(screen, (0, 0, 255), player2_rect)
 
     pygame.display.flip()
+
     clock.tick(60)
 
 pygame.quit()
