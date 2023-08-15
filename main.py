@@ -13,6 +13,14 @@ def main():
     pygame.mixer.init()
     screen = pygame.display.set_mode((1280, 720))
     pygame.display.set_caption('ChompChampions')
+
+    # setting up audio for button hover and main menu audio (can be changed later)
+    main_menu_sound = pygame.mixer.Sound("audio/main_menu_audio.mp3")
+    pygame.mixer.Sound.set_volume(main_menu_sound, 0.25)
+    pygame.mixer.Sound.play(main_menu_sound, loops=-1)
+
+    global music_running
+    music_running = False
     while True:
         main_menu_output = main_menu(screen)
         if main_menu_output == "instructions":
@@ -21,7 +29,8 @@ def main():
                 continue
         elif main_menu_output == "start":
             # brings user to start menu
-            print(main_menu_output)
+            if start_screen(screen) == "back":
+                continue
 
 
 def main_menu(screen):
@@ -32,14 +41,11 @@ def main_menu(screen):
     screen.blit(start_menu_screen, (0, 0))
     pygame.display.update()
 
+    # name of audio folder
+    button_click_sound = 'audio'
+
     # font type for the main menu buttons
     font_type = pygame.font.SysFont("impact", 40)
-
-    # setting up audio for button hover and main menu audio (can be changed later)
-    button_click_sound = 'audio'
-    main_menu_sound = pygame.mixer.Sound("audio/main_menu_audio.mp3")
-    pygame.mixer.Sound.set_volume(main_menu_sound, 0.25)
-    pygame.mixer.Sound.play(main_menu_sound, loops=-1)
 
     # start button initialization
     start_button_surface = font_type.render("Start", 0, (255, 255, 255), (51, 51, 51))
@@ -63,7 +69,6 @@ def main_menu(screen):
             # Events for when user clicks with mouse
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if instructions_button_rectangle.collidepoint(event.pos):
-                    pygame.mixer.Sound.stop(main_menu_sound)
                     return "instructions"
                 elif start_button_rectangle.collidepoint(event.pos):
                     return "start"
@@ -105,6 +110,33 @@ def main_menu(screen):
 
 
 def instructions(screen):
+
+    # Setting up screen
+    screen.fill((0, 0, 0))
+    pygame.display.update()
+    back_arrow_font = pygame.font.SysFont("webdings", 40)
+
+    # start button initialization
+    back_button_surface = back_arrow_font.render("3", 0, (255, 255, 255), (51, 51, 51))
+    back_button_rectangle = back_button_surface.get_rect(center=(20, 20))
+    screen.blit(back_button_surface, back_button_rectangle)
+
+    while True:
+        for event in pygame.event.get():
+
+            # Allows user to exit game
+            if event.type == pygame.QUIT:
+                sys.exit()
+
+            # If user clicks back, returns to main menu
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if back_button_rectangle.collidepoint(event.pos):
+                    return "back"
+
+        pygame.display.update()
+
+
+def start_screen(screen):
 
     # Setting up screen
     screen.fill((0, 0, 0))
