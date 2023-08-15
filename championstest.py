@@ -93,10 +93,21 @@ while running:
         projectiles.append(throw)  # Add the new projectile to the list
         print("projectile thrown")
 
+    projectiles_to_remove = []  # List to store projectiles that should be removed
+
     # Move and draw projectiles
     for projectile in projectiles:
         projectile.move(projectile.velocity, 0, 2)  # Move projectile horizontally
         pygame.draw.circle(screen, (255, 255, 0), projectile.current_position, 10)  # Draw the projectile
+        
+        # Check for collision with player2
+        if (player2.current_position[0] - 20 == projectile.current_position[0]) and \
+           (player2.current_position[1] == projectile.current_position[1]):
+            projectiles_to_remove.append(projectile)
+
+        # Remove collided projectiles
+    for projectile in projectiles_to_remove:
+        projectiles.remove(projectile)
 
     #player 2 movement
     if keys[pygame.K_UP]:  # Move player1 up in the y-axis
