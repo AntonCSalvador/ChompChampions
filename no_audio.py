@@ -12,13 +12,16 @@ def main():
     pygame.init()
     screen = pygame.display.set_mode((1280, 720))
     pygame.display.set_caption('ChompChampions')
-    main_menu_output = main_menu(screen)
-    if main_menu_output == "instructions":
-        # brings user to instructions menu
-        print(main_menu_output)
-    elif main_menu_output == "start":
-        # brings user to start menu
-        print(main_menu_output)
+    while True:
+        main_menu_output = main_menu(screen)
+        if main_menu_output == "instructions":
+            # brings user to instructions menu
+            if instructions(screen) == "back":
+                continue
+        elif main_menu_output == "start":
+            # brings user to start menu
+            if start_screen(screen) == "back":
+                continue
 
 
 def main_menu(screen):
@@ -86,6 +89,60 @@ def main_menu(screen):
                     start_button_surface = font_type.render("Start", 0, (255, 255, 255), (51, 51, 51))
                     start_button_rectangle = start_button_surface.get_rect(center=((1280 // 3), 480))
                     screen.blit(start_button_surface, start_button_rectangle)
+
+        pygame.display.update()
+
+
+def instructions(screen):
+
+    # Setting up screen
+    screen.fill((0, 0, 0))
+    pygame.display.update()
+    back_arrow_font = pygame.font.SysFont("webdings", 40)
+
+    # start button initialization
+    back_button_surface = back_arrow_font.render("3", 0, (255, 255, 255), (51, 51, 51))
+    back_button_rectangle = back_button_surface.get_rect(center=(20, 20))
+    screen.blit(back_button_surface, back_button_rectangle)
+
+    while True:
+        for event in pygame.event.get():
+
+            # Allows user to exit game
+            if event.type == pygame.QUIT:
+                sys.exit()
+
+            # If user clicks back, returns to main menu
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if back_button_rectangle.collidepoint(event.pos):
+                    return "back"
+
+        pygame.display.update()
+
+
+def start_screen(screen):
+
+    # Setting up screen
+    screen.fill((0, 0, 0))
+    pygame.display.update()
+    back_arrow_font = pygame.font.SysFont("webdings", 40)
+
+    # start button initialization
+    back_button_surface = back_arrow_font.render("3", 0, (255, 255, 255), (51, 51, 51))
+    back_button_rectangle = back_button_surface.get_rect(center=(20, 20))
+    screen.blit(back_button_surface, back_button_rectangle)
+
+    while True:
+        for event in pygame.event.get():
+
+            # Allows user to exit game
+            if event.type == pygame.QUIT:
+                sys.exit()
+
+            # If user clicks back, returns to main menu
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if back_button_rectangle.collidepoint(event.pos):
+                    return "back"
 
         pygame.display.update()
 
