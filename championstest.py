@@ -113,11 +113,13 @@ while running:
         pygame.draw.circle(screen, (255, 255, 0), projectile.current_position, 10)  # Draw the projectile
         
         # Check for collision with player2 using bounding boxes
-        if projectile.rect.colliderect(player2_rect):
+        if (projectile.rect.colliderect(player2_rect) and
+            player2_rect.collidepoint(projectile.current_position)):  # Check both rect collision and point collision
             projectiles_to_remove.append(projectile)
             print(health_bar1.hp)
             health_bar1.hp = health_bar1.hp - 1
             print(health_bar1.hp)
+
 
     for projectile in projectiles_to_remove:
         projectiles.remove(projectile)
