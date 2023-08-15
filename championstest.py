@@ -35,6 +35,21 @@ class Floor:
     def draw(self, surface):
         pygame.draw.rect(surface, (0, 255, 0), self.rect)  # Green color for the ground
 
+class HealthBar():
+    def __init__(self,x,y,w,h,max_hp):
+        self.x=x
+        self.y=y 
+        self.w = w
+        self.h = h
+        self.hp = max_hp #bc you assume it starts at full health 
+        self.max_hp = max_hp
+
+    def draw(self, surface):
+        #calculate health ratio
+        ratio = self.hp/self.max_hp
+        pygame.draw.rect(surface, "red", (self.x, self.y, self.w, self.h))
+        pygame.draw.rect(surface, "green", (self.x, self.y, self.w * ratio, self.h))
+
 # Pygame initialization
 pygame.init()
 screen = pygame.display.set_mode((800, 600))
@@ -44,6 +59,8 @@ clock = pygame.time.Clock()
 player1 = Player(100, 400)
 player2 = Player(400, 400)
 floor = Floor(0, 550, 800, 50)  # Creating a floor rectangle
+health_bar1 = HealthBar(10,10, 300, 40, 100)
+
 
 projectiles = []  # List to store active projectiles
 
@@ -56,6 +73,9 @@ while running:
 
     # Clear the screen
     screen.fill((0, 0, 0))
+
+    #healthbars
+    health_bar1.draw(screen)
 
     #physics
     # Check for collisions and apply gravity
@@ -104,6 +124,9 @@ while running:
         if (player2.current_position[0] - 20 == projectile.current_position[0]) and \
            (player2.current_position[1] == projectile.current_position[1]):
             projectiles_to_remove.append(projectile)
+            print(health_bar1.hp)
+            health_bar1.hp = health_bar1.hp - 1
+            print(health_bar1.hp)
 
         # Remove collided projectiles
     for projectile in projectiles_to_remove:
