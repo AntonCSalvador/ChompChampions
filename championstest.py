@@ -94,9 +94,11 @@ pygame.draw.rect(screen, (255, 0, 0), player1_rect)
 pygame.draw.rect(screen, (0, 0, 255), player2_rect)
 
 
-projectiles = []  # List to store active projectiles
+projectiles1 = []  # List to store active projectiles for player 1
+projectiles2 = []
 
-melee_attacking = False
+melee_attacking1 = False
+melee_attacking2 = False
 melee_damage = 2
 
 # all physics variables
@@ -117,8 +119,11 @@ velocity2 = 0
 
 # skill cool_downs
 t_cooldown = 0
-punch_reach = 0
-punch_dir = 'right'
+l_cooldown = 0
+punch_reach1 = 0
+punch_reach2 = 0
+punch_dir1 = 'right'
+punch_dir2 = 'left'
 
 # Load the background GIF image
 background_image = pygame.image.load("static/champions/testImg/testBackground.gif")
@@ -192,69 +197,70 @@ while running:
     # Projectile throw for player1
     if keys[pygame.K_r]:
         if player1.direction == 'left':
-            proj_vel = -2
+            proj_vel1 = -2
         else:
-            proj_vel = 2
-        throw = Projectile(player1.current_position[0], player1.current_position[1], proj_vel)
-        projectiles.append(throw)  # Add the new projectile to the list
+            proj_vel1 = 2
+        throw1 = Projectile(player1.current_position[0], player1.current_position[1], proj_vel1)
+        projectiles1.append(throw1)  # Add the new projectile to the list
         print("projectile thrown")
 
-    # Remove collided projectiles
-    projectiles_to_remove = []  # List to store projectiles that should be removed
-    for projectile in projectiles:
-        projectile.move(projectile.velocity, 0)  # Move projectile horizontally
-        pygame.draw.circle(screen, (255, 255, 0), projectile.current_position, 10)  # Draw the projectile
+    # Remove collided projectiles for player1
+    projectiles1_to_remove = []  # List to store projectiles that should be removed
+    for projectile1 in projectiles1:
+        projectile1.move(projectile1.velocity, 0)  # Move projectile horizontally
+        pygame.draw.circle(screen, (255, 255, 0), projectile1.current_position, 10)  # Draw the projectile
 
         # Check for collision with player2 using bounding boxes
-        if (projectile.rect.colliderect(player2_rect) and
+        if (projectile1.rect.colliderect(player2_rect) and
                 player2_rect.collidepoint(
-                    projectile.current_position)):  # Check both rect collision and point collision
-            projectiles_to_remove.append(projectile)
+                    projectile1.current_position)):  # Check both rect collision and point collision
+            projectiles1_to_remove.append(projectile1)
             print(health_bar2.hp)
             health_bar2.hp = health_bar2.hp - 1
             print(health_bar2.hp)
-            if projectile.velocity > 0:
+            if projectile1.velocity > 0:
                 player2.move(0.5, 0)  # Positive dx value moves character to the right
             else:
                 player2.move(-0.5, 0)
 
-    for projectile in projectiles_to_remove:
-        projectiles.remove(projectile)
+    for projectile1 in projectiles1_to_remove:
+        projectiles1.remove(projectile1)
 
-    # Melee attack
+    # Melee attack for player 1
     if keys[pygame.K_t] and t_cooldown == 0:
-        punch_dir = player1.direction
-        melee_attacking = True
-        punch_reach = 0
+        punch_dir1 = player1.direction
+        melee_attacking1 = True
+        punch_reach1 = 0
         t_cooldown = 120
 
-    if melee_attacking:
+    if melee_attacking1:
         # Draw a melee attack rectangle relative to player1's position
-        melee_attack_rect = pygame.Rect(player1.current_position[0] + punch_reach, player1.current_position[1], 20, 20)
-        pygame.draw.rect(screen, (255, 0, 0), melee_attack_rect)
-        if punch_dir == 'right':
-            punch_reach = 0 - (t_cooldown * 2 - 240)
+        melee_attack_rect1 = pygame.Rect(player1.current_position[0] + punch_reach1, player1.current_position[1],
+                                         20, 20)
+        pygame.draw.rect(screen, (255, 0, 0), melee_attack_rect1)
+        if punch_dir1 == 'right':
+            punch_reach1 = 0 - (t_cooldown * 2 - 240)
         else:
-            punch_reach = -20 + (t_cooldown * 2 - 240)
+            punch_reach1 = -20 + (t_cooldown * 2 - 240)
 
         # Check for collision with player2
-        if melee_attack_rect.colliderect(player2_rect):
-            projectiles_to_remove.append(Projectile)
+        if melee_attack_rect1.colliderect(player2_rect):
+            projectiles1_to_remove.append(Projectile)
             print(health_bar2.hp)
             health_bar2.hp -= melee_damage
             print(health_bar2.hp)
-            melee_attacking = False
+            melee_attacking1 = False
             init_vel2 = 1.5 
             if init_vel2 > 0:
-                if punch_dir == 'right':
+                if punch_dir1 == 'right':
                     player2.move(10, 0)
                 else:
                     player2.move(-10, 0)
                 # might need to add acceleration to make more smooth
 
         if t_cooldown < 110:
-            melee_attacking = False  # Reset melee_attacking flag
-            punch_reach = 0
+            melee_attacking1 = False  # Reset melee_attacking flag
+            punch_reach1 = 0
 
     if t_cooldown > 0:
         t_cooldown -= 1
@@ -273,6 +279,77 @@ while running:
     if keys[pygame.K_LEFT]:  # Move player2 to the left
         player2.move(-2, 0)  # Negative dx value moves character to the left
         player2.direction = 'left'
+
+    # Projectile throw for player2
+    if keys[pygame.K_k]:
+        if player2.direction == 'left':
+            proj_vel2 = -2
+        else:
+            proj_vel2 = 2
+        throw2 = Projectile(player2.current_position[0], player2.current_position[1], proj_vel2)
+        projectiles2.append(throw2)  # Add the new projectile to the list
+        print("projectile thrown")
+
+    # Remove collided projectiles for player 2
+    projectiles2_to_remove = []  # List to store projectiles that should be removed
+    for projectile2 in projectiles2:
+        projectile2.move(projectile2.velocity, 0)  # Move projectile horizontally
+        pygame.draw.circle(screen, (255, 255, 0), projectile2.current_position, 10)  # Draw the projectile
+
+        # Check for collision with player2 using bounding boxes
+        if (projectile2.rect.colliderect(player1_rect) and
+                player1_rect.collidepoint(
+                    projectile2.current_position)):  # Check both rect collision and point collision
+            projectiles2_to_remove.append(projectile2)
+            print(health_bar1.hp)
+            health_bar1.hp = health_bar1.hp - 1
+            print(health_bar1.hp)
+            if projectile2.velocity > 0:
+                player1.move(0.5, 0)  # Positive dx value moves character to the right
+            else:
+                player1.move(-0.5, 0)
+
+    for projectile2 in projectiles2_to_remove:
+        projectiles2.remove(projectile2)
+
+    # Melee attack for player 2
+    if keys[pygame.K_l] and l_cooldown == 0:
+        punch_dir2 = player2.direction
+        melee_attacking2 = True
+        punch_reach2 = 0
+        l_cooldown = 120
+
+    if melee_attacking2:
+        # Draw a melee attack rectangle relative to player2's position
+        melee_attack_rect2 = pygame.Rect(player2.current_position[0] + punch_reach2, player2.current_position[1],
+                                         20, 20)
+        pygame.draw.rect(screen, (255, 0, 0), melee_attack_rect2)
+        if punch_dir2 == 'right':
+            punch_reach2 = 0 - (l_cooldown * 2 - 240)
+        else:
+            punch_reach2 = -20 + (l_cooldown * 2 - 240)
+
+        # Check for collision with player2
+        if melee_attack_rect2.colliderect(player1_rect):
+            projectiles2_to_remove.append(Projectile)
+            print(health_bar1.hp)
+            health_bar1.hp -= melee_damage
+            print(health_bar1.hp)
+            melee_attacking2 = False
+            init_vel1 = 1.5
+            if init_vel1 > 0:
+                if punch_dir2 == 'right':
+                    player1.move(10, 0)
+                else:
+                    player1.move(-10, 0)
+                # might need to add acceleration to make more smooth
+
+        if l_cooldown < 110:
+            melee_attacking2 = False  # Reset melee_attacking flag
+            punch_reach2 = 0
+
+    if l_cooldown > 0:
+        l_cooldown -= 1
 
     # Draw floor
     floor.draw(screen)
