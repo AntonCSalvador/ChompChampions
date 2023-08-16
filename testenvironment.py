@@ -68,7 +68,31 @@ class profPicture():
     def draw(self, surface):
         pygame.draw.rect(surface, (255, 255, 255), (self.x, self.y, self.w, self.h))  # Draw the rectangle
         surface.blit(self.image, (self.x, self.y))  # Draw the image inside the rectangle
+
+class inGameTimer():
+    def __init__(self, x, y, w, h):
+        self.x = x
+        self.y = y
+        self.w = w
+        self.h = h
+        self.remaining_time = 90  # Initialize the remaining time to 90 seconds
+
+
+    def draw(self, surface):
+        pygame.draw.rect(surface, (255, 255, 255), (self.x, self.y, self.w, self.h))  # Draw the rectangle
+
+        # Calculate the text to display
+        font = pygame.font.Font(None, 36)
+        text = font.render(str(round(self.remaining_time)), True, (0, 0, 0))
+        text_rect = text.get_rect(center=(self.x + self.w // 2, self.y + self.h // 2))
+        surface.blit(text, text_rect)
         
+        self.remaining_time -= 0.01  # Decrease the remaining time by 1 each frame
+
+        if self.remaining_time <= 0:
+            self.remaining_time = 0  # Reset the timer if it goes below 0
+            return self.remaining_time
+
 # Pygame initialization
 pygame.init()
 screen = pygame.display.set_mode((800, 600))
@@ -86,6 +110,7 @@ health_bar2 = HealthBar(450, 10, 300, 40, 100)
 profilePicP1 = profPicture(5, 10, 40, 40, champ1Img)
 profilePicP2 = profPicture(755, 10, 40, 40, champ2Img)
 
+timer = inGameTimer(365, 10,70, 40)
 
 projectiles = []  # List to store active projectiles
 
@@ -136,6 +161,8 @@ while running:
     profilePicP1.draw(screen)
     profilePicP2.draw(screen)
 
+    #timer
+    timer.draw(screen)
 
     # Physics
     # Check for collisions and apply gravity

@@ -202,11 +202,26 @@ def start_screen(screen):
         pygame.display.update()
 
 
+class champSelectPicture():
+    def __init__(self, x, y, w, h, imgPath):
+        self.x = x
+        self.y = y
+        self.w = w
+        self.h = h
+        self.image = pygame.image.load(imgPath)  # Load the image
+        self.image = pygame.transform.scale(self.image, (w, h))  # Scale the image to match the rectangle dimensions
+
+    def draw(self, surface):
+        pygame.draw.rect(surface, (255, 255, 255), (self.x, self.y, self.w, self.h))  # Draw the rectangle
+        surface.blit(self.image, (self.x, self.y))  # Draw the image inside the rectangle
+
 def champions_select(screen, num_players):
     choose_your_character = Audio(0.25, 'music', False, screen, 'audio/ChooseYourCharacter.mp3')
     choose_your_character_music = Audio(0.25, 'music', False, screen, 'audio/ChooseYourCharacterMusic.mp3')
     e_honda = Audio(0.25, 'music', False, screen, 'audio/EHonda.mp3')
+    xijinDex = Audio(0.25, 'music', False, screen, 'audio/xijindex.mp3')
 
+    player1ChampionImg = ""
 
     screen.fill((0, 0, 0))
     champion_select_image = pygame.image.load("static/champion_select_image.png")
@@ -248,6 +263,10 @@ def champions_select(screen, num_players):
                     return "back"
                 if champion_1_rectangle.collidepoint(event.pos):
                     pos1 = [140, 'Champion1']
+                    xijinDex.play_music(0)
+                    player1ChampionImg = "static/champions/testImg/XiJinDexter.png"
+                    player1Champion = champSelectPicture(10, 10, 200, 200, player1ChampionImg)
+                    player1Champion.draw(screen)
                 if champion_2_rectangle.collidepoint(event.pos):
                     pos1 = [237, 'Champion2']
                 if champion_3_rectangle.collidepoint(event.pos):
