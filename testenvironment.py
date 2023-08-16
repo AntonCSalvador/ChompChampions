@@ -109,8 +109,8 @@ health_bar1 = HealthBar(50, 10, 300, 40, 100)
 health_bar2 = HealthBar(450, 10, 300, 40, 100)
 profilePicP1 = profPicture(5, 10, 40, 40, champ1Img)
 profilePicP2 = profPicture(755, 10, 40, 40, champ2Img)
-player1Idle = pygame.image.load("static/champions/Martial Hero 2/Sprites/Idle.png")
-player1Walk = pygame.image.load("static/champions/Martial Hero 2/Sprites/Run.png")
+player1Idle = pygame.image.load("static/champions/Martial Hero 2/Sprites/IdleTest.png")
+player1Walk = pygame.image.load("static/champions/Martial Hero 2/Sprites/RunTest.png")
 
 # Get the dimensions of the sprite sheet images
 idle_sheet_width = player1Idle.get_width()
@@ -197,8 +197,8 @@ while running:
     if background_y <= -background.get_height():
         background_y = 0
 
-    # player1_rect = pygame.Rect(player1.current_position[0] - 20, player1.current_position[1], 40, 40)
-    # pygame.draw.rect(screen, (255, 0, 0), player1_rect)
+    player1_rect = pygame.Rect(player1.current_position[0] - 20, player1.current_position[1], 40, 40)
+    pygame.draw.rect(screen, (255, 0, 0), player1_rect)
 
     # Clear the screen
     screen.fill((0, 0, 0))
@@ -206,8 +206,8 @@ while running:
     # Draw the background at the current position
     screen.blit(background, (0, background_y))
 
-    player1_rect = pygame.Rect(player1.current_position[0] - 20, player1.current_position[1], 40, 40)
-    pygame.draw.rect(screen, (255, 0, 0), player1_rect)
+    # player1_rect = pygame.Rect(player1.current_position[0] - 20, player1.current_position[1], 40, 40)
+    # pygame.draw.rect(screen, (255, 0, 0), player1_rect)
 
     #for basic animation
     #for basic animation
