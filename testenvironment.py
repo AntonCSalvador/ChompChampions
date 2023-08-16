@@ -57,23 +57,34 @@ class HealthBar():
         pygame.draw.rect(surface, "green", (self.x, self.y, self.w * ratio, self.h))
 
 class profPicture():
-    def __init__(self, x, y, w, h):
+    def __init__(self, x, y, w, h, imgPath):
         self.x = x
         self.y = y
         self.w = w
         self.h = h
+        self.image = pygame.image.load(imgPath)  # Load the image
+        self.image = pygame.transform.scale(self.image, (w, h))  # Scale the image to match the rectangle dimensions
 
+    def draw(self, surface):
+        pygame.draw.rect(surface, (255, 255, 255), (self.x, self.y, self.w, self.h))  # Draw the rectangle
+        surface.blit(self.image, (self.x, self.y))  # Draw the image inside the rectangle
+        
 # Pygame initialization
 pygame.init()
 screen = pygame.display.set_mode((800, 600))
 clock = pygame.time.Clock()
 
+champ1Img = "static/champions/testImg/transparentDex.png"
+champ2Img = "static/champions/testImg/dexHead.png"
+
 # Create player objects and a Floor object
 player1 = Player(100, 400)
 player2 = Player(400, 400)
 floor = Floor(0, 550, 800, 50)  # Creating a floor rectangle
-health_bar1 = HealthBar(10, 10, 300, 40, 100)
-health_bar2 = HealthBar(490, 10, 300, 40, 100)
+health_bar1 = HealthBar(50, 10, 300, 40, 100)
+health_bar2 = HealthBar(450, 10, 300, 40, 100)
+profilePicP1 = profPicture(5, 10, 40, 40, champ1Img)
+profilePicP2 = profPicture(755, 10, 40, 40, champ2Img)
 
 
 projectiles = []  # List to store active projectiles
@@ -100,6 +111,18 @@ velocity2 = 0
 t_cooldown = 0
 punch_reach = 0
 
+# Load the background GIF image
+background_image = pygame.image.load("static/champions/testImg/testBackground.gif")
+background_frames = []  # List to store individual frames of the GIF
+frame_width, frame_height = 800, 600  # Set the dimensions for each frame
+for x in range(0, background_image.get_width(), frame_width):
+    for y in range(0, background_image.get_height(), frame_height):
+        frame = pygame.Surface((frame_width, frame_height))
+        frame.blit(background_image, (0, 0), pygame.Rect(x, y, frame_width, frame_height))
+        background_frames.append(frame)
+
+# Initialize the current frame index
+current_frame_index = 0
 
 running = True
 while running:
@@ -110,9 +133,20 @@ while running:
     # Clear the screen
     screen.fill((0, 0, 0))
 
+    # Draw the background frame
+    screen.blit(background_frames[current_frame_index], (0, 0))
+
+    # Update frame index for the next frame (looping back to 0 if needed)
+    current_frame_index = (current_frame_index + 1) % len(background_frames)
+
     # Health bars
     health_bar1.draw(screen)
     health_bar2.draw(screen)
+
+    #pfp
+    profilePicP1.draw(screen)
+    profilePicP2.draw(screen)
+
 
     # Physics
     # Check for collisions and apply gravity
