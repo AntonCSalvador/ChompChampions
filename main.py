@@ -226,8 +226,10 @@ def champions_select(screen, num_players):
     champion_8_rectangle = pygame.Rect(815, 445, 93, 113)
     champion_9_rectangle = pygame.Rect(915, 445, 93, 113)
     champion_10_rectangle = pygame.Rect(1010, 445, 93, 113)
-    pos1 = 0
+    pos1 = [0, 'Champion0']
     select_list = ['blank']
+    select_color = (255, 0, 0)
+    p1_lock = 0
 
     while True:
         for event in pygame.event.get():
@@ -241,34 +243,45 @@ def champions_select(screen, num_players):
                 if back_button_rectangle.collidepoint(event.pos):
                     return "back"
                 if champion_1_rectangle.collidepoint(event.pos):
-                    pos1 = 140
+                    pos1 = [140, 'Champion1']
                 if champion_2_rectangle.collidepoint(event.pos):
-                    pos1 = 237
+                    pos1 = [237, 'Champion2']
                 if champion_3_rectangle.collidepoint(event.pos):
-                    pos1 = 335
+                    pos1 = [335, 'Champion3']
                 if champion_4_rectangle.collidepoint(event.pos):
-                    pos1 = 430
+                    pos1 = [430, 'Champion4']
                 if champion_5_rectangle.collidepoint(event.pos):
-                    pos1 = 525
+                    pos1 = [525, 'Champion5']
                 if champion_6_rectangle.collidepoint(event.pos):
-                    pos1 = 625
+                    pos1 = [625, 'Champion6']
                 if champion_7_rectangle.collidepoint(event.pos):
-                    pos1 = 720
+                    pos1 = [720, 'Champion7']
                 if champion_8_rectangle.collidepoint(event.pos):
-                    pos1 = 815
+                    pos1 = [815, 'Champion8']
                 if champion_9_rectangle.collidepoint(event.pos):
-                    pos1 = 915
+                    pos1 = [915, 'Champion9']
                 if champion_10_rectangle.collidepoint(event.pos):
-                    pos1 = 1010
+                    pos1 = [1010, 'Champion10']
 
-            if old_pos1 != pos1:
-                drawn_square = pygame.Rect((pos1, 445, 93, 113))
+            if old_pos1[0] != pos1[0]:
+                drawn_square = pygame.Rect((pos1[0], 445, 93, 113))
                 select_list.append(drawn_square)
                 select_list.pop(0)
                 screen.blit(champion_select_image, (0, 0))
                 screen.blit(back_button_surface, back_button_rectangle)
-                pygame.draw.rect(screen, (255, 0, 0), select_list[0], 3)
+                pygame.draw.rect(screen, select_color, select_list[0], 3)
+                if p1_lock > 0:
+                    pygame.draw.rect(screen, (255, 0, 0), pygame.Rect((p1_lock, 445, 93, 113)), 3)
 
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_RETURN:
+                    if select_color == (255, 0, 0):
+                        select_color = (0, 0, 255)
+                        p1_lock = int(pos1[0])
+                        pygame.draw.rect(screen, select_color, select_list[0], 3)
+                        print("Player1 Selects:", pos1[1])
+                    elif select_color == (0, 0, 255):
+                        print("Player2 Selects:", pos1[1])
 
         pygame.display.update()
 
