@@ -137,9 +137,14 @@ t_cooldown = 0
 punch_reach = 0
 
 # Load the background GIF image
-background_image = pygame.image.load("static/champions/testImg/testBackground.gif")
-background_image = pygame.transform.scale(background_image, (800, 600))  # Scale the image to match the screen dimensions
+# background_image = pygame.image.load("static/champions/testImg/testBackground.gif")
+# background_image = pygame.transform.scale(background_image, (800, 600))  
+# Scale the image to match the screen dimensions
 
+# Load the background image
+background = pygame.image.load("static/champions/testImg/testBackground.gif")
+background = pygame.transform.scale(background, (800, 600))  # Scale the image to match the screen dimensions
+background_y = 0
 
 running = True
 while running:
@@ -147,11 +152,23 @@ while running:
         if event.type == pygame.QUIT:
             running = False
 
+    # Decrement background_y to move the background up
+    background_y -= 0.05
+
+    # Reset background_y if it reaches the negative height of the image
+    if background_y <= -background.get_height():
+        background_y = 0
+
     # Clear the screen
     screen.fill((0, 0, 0))
 
+    # Draw the background at the current position
+    screen.blit(background, (0, background_y))
+
     # Draw the background frame
-    screen.blit(background_image, (0, 0))
+    # screen.blit(background_image, (0, 0))
+
+
 
     # Health bars
     health_bar1.draw(screen)
