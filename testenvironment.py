@@ -113,16 +113,8 @@ punch_reach = 0
 
 # Load the background GIF image
 background_image = pygame.image.load("static/champions/testImg/testBackground.gif")
-background_frames = []  # List to store individual frames of the GIF
-frame_width, frame_height = 800, 600  # Set the dimensions for each frame
-for x in range(0, background_image.get_width(), frame_width):
-    for y in range(0, background_image.get_height(), frame_height):
-        frame = pygame.Surface((frame_width, frame_height))
-        frame.blit(background_image, (0, 0), pygame.Rect(x, y, frame_width, frame_height))
-        background_frames.append(frame)
+background_image = pygame.transform.scale(background_image, (800, 600))  # Scale the image to match the screen dimensions
 
-# Initialize the current frame index
-current_frame_index = 0
 
 running = True
 while running:
@@ -134,10 +126,7 @@ while running:
     screen.fill((0, 0, 0))
 
     # Draw the background frame
-    screen.blit(background_frames[current_frame_index], (0, 0))
-
-    # Update frame index for the next frame (looping back to 0 if needed)
-    current_frame_index = (current_frame_index + 1) % len(background_frames)
+    screen.blit(background_image, (0, 0))
 
     # Health bars
     health_bar1.draw(screen)
@@ -209,6 +198,7 @@ while running:
             print(health_bar2.hp)
             health_bar2.hp = health_bar2.hp - 1
             print(health_bar2.hp)
+            player2.move(0.5, 0)  # Positive dx value moves character to the right
 
     for projectile in projectiles_to_remove:
         projectiles.remove(projectile)
@@ -232,6 +222,10 @@ while running:
             health_bar2.hp -= melee_damage
             print(health_bar2.hp)
             melee_attacking = False
+            init_vel2 = 1.5 
+            if(init_vel2 > 0):
+                player2.move(10,0)
+                #might need to add acceleration to make more smooth
 
         if t_cooldown < 110:
             melee_attacking = False  # Reset melee_attacking flag
