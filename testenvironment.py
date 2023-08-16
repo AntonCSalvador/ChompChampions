@@ -109,6 +109,43 @@ health_bar1 = HealthBar(50, 10, 300, 40, 100)
 health_bar2 = HealthBar(450, 10, 300, 40, 100)
 profilePicP1 = profPicture(5, 10, 40, 40, champ1Img)
 profilePicP2 = profPicture(755, 10, 40, 40, champ2Img)
+player1Idle = pygame.image.load("static/champions/Martial Hero 2/Sprites/Idle.png")
+player1Walk = pygame.image.load("static/champions/Martial Hero 2/Sprites/Run.png")
+
+# Get the dimensions of the sprite sheet images
+idle_sheet_width = player1Idle.get_width()
+idle_sheet_height = player1Idle.get_height()
+
+walk_sheet_width = player1Walk.get_width()
+walk_sheet_height = player1Walk.get_height()
+
+# Print the dimensions
+print("Player1 Idle Sprite Sheet Dimensions:", idle_sheet_width, "x", idle_sheet_height)
+print("Player1 Walk Sprite Sheet Dimensions:", walk_sheet_width, "x", walk_sheet_height)
+
+# Define the dimensions of each frame in the sprite sheet
+frame_width = 200
+frame_height = 200
+
+# Create a list to store the individual frames
+player1_frames = []
+for y in range(0, player1Idle.get_height(), frame_height):
+    for x in range(0, player1Idle.get_width(), frame_width):
+        frame = player1Idle.subsurface(pygame.Rect(x, y, frame_width, frame_height))
+        player1_frames.append(frame)
+for y in range(0, player1Walk.get_height(), frame_height):
+    for x in range(0, player1Walk.get_width(), frame_width):
+        frame = player1Walk.subsurface(pygame.Rect(x, y, frame_width, frame_height))
+        player1_frames.append(frame)
+
+
+# Define animation sequences as lists of frame indices
+idle_animation = [0, 1, 2, 3]  # Example: idle animation frames
+walk_animation = [4, 5, 6, 7]  # Example: walking animation frames
+current_animation = idle_animation  # Start with idle animation
+current_frame_index = 0
+
+
 
 timer = inGameTimer(365, 10,70, 40)
 
@@ -160,15 +197,24 @@ while running:
     if background_y <= -background.get_height():
         background_y = 0
 
+    # player1_rect = pygame.Rect(player1.current_position[0] - 20, player1.current_position[1], 40, 40)
+    # pygame.draw.rect(screen, (255, 0, 0), player1_rect)
+
     # Clear the screen
     screen.fill((0, 0, 0))
 
     # Draw the background at the current position
     screen.blit(background, (0, background_y))
 
-    # Draw the background frame
-    # screen.blit(background_image, (0, 0))
+    player1_rect = pygame.Rect(player1.current_position[0] - 20, player1.current_position[1], 40, 40)
+    pygame.draw.rect(screen, (255, 0, 0), player1_rect)
 
+    #for basic animation
+    #for basic animation
+    current_frame = player1_frames[current_animation[current_frame_index]]
+    player1.current_frame = pygame.transform.scale(current_frame, (40, 40))  # Adjust size as needed
+    current_frame_index = (current_frame_index + 1) % len(current_animation)
+    screen.blit(player1.current_frame, player1.current_position)
 
 
     # Health bars
@@ -217,6 +263,11 @@ while running:
         time1 = 0
     else:
         pass
+
+    if keys[pygame.K_d] or keys[pygame.K_a]:
+        current_animation = walk_animation
+    else:
+        current_animation = idle_animation
 
     if keys[pygame.K_d]:  # Move player1 to the right
         player1.move(2, 0)  # Positive dx value moves character to the right
@@ -294,9 +345,7 @@ while running:
     floor.draw(screen)
 
     # Draw rectangles for characters
-    player1_rect = pygame.Rect(player1.current_position[0] - 20, player1.current_position[1], 40, 40)
     player2_rect = pygame.Rect(player2.current_position[0] - 20, player2.current_position[1], 40, 40)
-    pygame.draw.rect(screen, (255, 0, 0), player1_rect)
     pygame.draw.rect(screen, (0, 0, 255), player2_rect)
 
     pygame.display.flip()
