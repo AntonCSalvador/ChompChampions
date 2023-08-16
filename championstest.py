@@ -187,10 +187,10 @@ while running:
     if keys[pygame.K_w] and player1.current_position[1] + 40 >= floor.rect.y:
         init_vel1 = 0.5  # changes how high the player jumps
         time1 = 0
-    if keys[pygame.K_d]:  # Move player1 to the right
+    if keys[pygame.K_d] and player1.current_position[0] < 780:  # Move player1 to the right
         player1.move(2, 0)  # Positive dx value moves character to the right
         player1.direction = 'right'
-    if keys[pygame.K_a]:  # Move player1 to the left
+    if keys[pygame.K_a] and player1.current_position[0] > 20:  # Move player1 to the left
         player1.move(-2, 0)  # Negative dx value moves character to the left
         player1.direction = 'left'
 
@@ -273,10 +273,10 @@ while running:
     if keys[pygame.K_UP] and player2.current_position[1] + 40 >= floor.rect.y:
         init_vel2 = 0.5  # changes how high the player jumps
         time2 = 0
-    if keys[pygame.K_RIGHT]:  # Move player2 to the right
+    if keys[pygame.K_RIGHT] and player2.current_position[0] < 780:  # Move player2 to the right
         player2.move(2, 0)  # Positive dx value moves character to the right
         player2.direction = 'right'
-    if keys[pygame.K_LEFT]:  # Move player2 to the left
+    if keys[pygame.K_LEFT] and player2.current_position[0] > 20:  # Move player2 to the left
         player2.move(-2, 0)  # Negative dx value moves character to the left
         player2.direction = 'left'
 
