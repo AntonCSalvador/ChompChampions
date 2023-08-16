@@ -28,8 +28,16 @@ def main():
                 continue
         elif main_menu_output == "start":
             # brings user to start menu
-            if start_screen(screen) == "back":
-                continue
+            while True:
+                start_output = start_screen(screen)
+                if start_output == 'back':
+                    break
+                else:
+                    while True:
+                        champions_output = champions_select(screen, start_output)
+                        if champions_output == 'back':
+                            break
+
 
 
 def main_menu(screen):
@@ -186,6 +194,81 @@ def start_screen(screen):
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if back_button_rectangle.collidepoint(event.pos):
                     return "back"
+                if one_player_rectangle.collidepoint(event.pos):
+                    return "1 player"
+                if two_player_rectangle.collidepoint(event.pos):
+                    return "two players"
+
+        pygame.display.update()
+
+
+def champions_select(screen, num_players):
+
+    screen.fill((0, 0, 0))
+    champion_select_image = pygame.image.load("static/champion_select_image.png")
+    screen.blit(champion_select_image, (0, 0))
+    back_arrow_font = pygame.font.SysFont("webdings", 40)
+
+    # start button initialization
+    back_button_surface = back_arrow_font.render("3", 0, (255, 255, 255), (51, 51, 51))
+    back_button_rectangle = back_button_surface.get_rect(center=(20, 20))
+    screen.blit(back_button_surface, back_button_rectangle)
+    pygame.display.update()
+
+    # champion select boxes
+    champion_1_rectangle = pygame.Rect(140, 445, 93, 113)
+    champion_2_rectangle = pygame.Rect(237, 445, 93, 113)
+    champion_3_rectangle = pygame.Rect(335, 445, 93, 113)
+    champion_4_rectangle = pygame.Rect(430, 445, 93, 113)
+    champion_5_rectangle = pygame.Rect(525, 445, 93, 113)
+    champion_6_rectangle = pygame.Rect(625, 445, 93, 113)
+    champion_7_rectangle = pygame.Rect(720, 445, 93, 113)
+    champion_8_rectangle = pygame.Rect(815, 445, 93, 113)
+    champion_9_rectangle = pygame.Rect(915, 445, 93, 113)
+    champion_10_rectangle = pygame.Rect(1010, 445, 93, 113)
+    pos1 = 0
+    select_list = ['blank']
+
+    while True:
+        for event in pygame.event.get():
+            old_pos1 = pos1
+            # Allows user to exit game
+            if event.type == pygame.QUIT:
+                sys.exit()
+
+            # If user clicks back, returns to main menu
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if back_button_rectangle.collidepoint(event.pos):
+                    return "back"
+                if champion_1_rectangle.collidepoint(event.pos):
+                    pos1 = 140
+                if champion_2_rectangle.collidepoint(event.pos):
+                    pos1 = 237
+                if champion_3_rectangle.collidepoint(event.pos):
+                    pos1 = 335
+                if champion_4_rectangle.collidepoint(event.pos):
+                    pos1 = 430
+                if champion_5_rectangle.collidepoint(event.pos):
+                    pos1 = 525
+                if champion_6_rectangle.collidepoint(event.pos):
+                    pos1 = 625
+                if champion_7_rectangle.collidepoint(event.pos):
+                    pos1 = 720
+                if champion_8_rectangle.collidepoint(event.pos):
+                    pos1 = 815
+                if champion_9_rectangle.collidepoint(event.pos):
+                    pos1 = 915
+                if champion_10_rectangle.collidepoint(event.pos):
+                    pos1 = 1010
+
+            if old_pos1 != pos1:
+                drawn_square = pygame.Rect((pos1, 445, 93, 113))
+                select_list.append(drawn_square)
+                select_list.pop(0)
+                screen.blit(champion_select_image, (0, 0))
+                screen.blit(back_button_surface, back_button_rectangle)
+                pygame.draw.rect(screen, (255, 0, 0), select_list[0], 3)
+
 
         pygame.display.update()
 
