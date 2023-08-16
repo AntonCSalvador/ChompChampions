@@ -11,6 +11,7 @@ class Audio:
         self.music = pygame.mixer.Sound(self.file_location)
         self.button_surface = ""
         self.button_rectangle = ""
+        self.music.set_volume(volume)
 
     def draw_music_audio(self, screen, font_type, font_size, text, text_color, background_color, button_center):
         icon = pygame.font.SysFont(font_type, font_size)
@@ -32,6 +33,9 @@ class Audio:
         else:
             self.mute = True
             pygame.mixer.Sound.stop(self.music)
+
+    def stop(self):
+        self.music.stop()
 
 class AudioList:
 

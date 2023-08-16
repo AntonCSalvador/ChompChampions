@@ -2,10 +2,9 @@ import pygame
 
 
 class Player:
-    def __init__(self, x, y, direction):
+    def __init__(self, x, y):
         self.start_position = (x, y)
         self.current_position = self.start_position
-        self.direction = direction
 
     def move(self, dx, dy):
         self.current_position = (self.current_position[0] + dx, self.current_position[1] + dy)
@@ -57,6 +56,7 @@ class HealthBar():
         pygame.draw.rect(surface, "red", (self.x, self.y, self.w, self.h))
         pygame.draw.rect(surface, "green", (self.x, self.y, self.w * ratio, self.h))
 
+
 class profPicture():
     def __init__(self, x, y, w, h, imgPath):
         self.x = x
@@ -69,7 +69,8 @@ class profPicture():
     def draw(self, surface):
         pygame.draw.rect(surface, (255, 255, 255), (self.x, self.y, self.w, self.h))  # Draw the rectangle
         surface.blit(self.image, (self.x, self.y))  # Draw the image inside the rectangle
-        
+
+
 # Pygame initialization
 pygame.init()
 screen = pygame.display.set_mode((800, 600))
@@ -79,14 +80,13 @@ champ1Img = "static/champions/testImg/transparentDex.png"
 champ2Img = "static/champions/testImg/dexHead.png"
 
 # Create player objects and a Floor object
-player1 = Player(100, 400, 'right')
-player2 = Player(400, 400, 'left')
+player1 = Player(100, 400)
+player2 = Player(400, 400)
 floor = Floor(0, 550, 800, 50)  # Creating a floor rectangle
 health_bar1 = HealthBar(50, 10, 300, 40, 100)
 health_bar2 = HealthBar(450, 10, 300, 40, 100)
 profilePicP1 = profPicture(5, 10, 40, 40, champ1Img)
 profilePicP2 = profPicture(755, 10, 40, 40, champ2Img)
-
 
 projectiles = []  # List to store active projectiles
 
@@ -100,6 +100,8 @@ gravity1 = 2
 init_vel1 = 0
 time1 = 0
 velocity1 = 0
+collision1_left = False
+collision1_right = False
 
 # physics variables for player2
 terminal_velocity2 = 15
@@ -107,6 +109,8 @@ gravity2 = 2
 init_vel2 = 0
 time2 = 0
 velocity2 = 0
+collision2_left = False
+collision2_right = False
 
 # skill cooldowns
 t_cooldown = 0
@@ -114,8 +118,8 @@ punch_reach = 0
 
 # Load the background GIF image
 background_image = pygame.image.load("static/champions/testImg/testBackground.gif")
-background_image = pygame.transform.scale(background_image, (800, 600))  # Scale the image to match the screen dimensions
-
+background_image = pygame.transform.scale(background_image,
+                                          (800, 600))  # Scale the image to match the screen dimensions
 
 running = True
 while running:
@@ -133,10 +137,9 @@ while running:
     health_bar1.draw(screen)
     health_bar2.draw(screen)
 
-    #pfp
+    # pfp
     profilePicP1.draw(screen)
     profilePicP2.draw(screen)
-
 
     # Physics
     # Check for collisions and apply gravity
@@ -174,20 +177,14 @@ while running:
     else:
         pass
 
-    if keys[pygame.K_d]:  # Move player1 to the right
+    if keys[pygame.K_d] and not collision1_right:  # Move player1 to the right
         player1.move(2, 0)  # Positive dx value moves character to the right
-        player1.direction = 'right'
     if keys[pygame.K_a]:  # Move player1 to the left
         player1.move(-2, 0)  # Negative dx value moves character to the left
-        player1.direction = 'left'
 
     # Projectile throw for player1
     if keys[pygame.K_r]:
-        if player1.direction == 'left':
-            proj_vel = -2
-        else:
-            proj_vel = 2
-        throw = Projectile(player1.current_position[0], player1.current_position[1], proj_vel)
+        throw = Projectile(player1.current_position[0], player1.current_position[1], 2)
         projectiles.append(throw)  # Add the new projectile to the list
         print("projectile thrown")
 
@@ -205,10 +202,7 @@ while running:
             print(health_bar2.hp)
             health_bar2.hp = health_bar2.hp - 1
             print(health_bar2.hp)
-            if projectile.velocity > 0:
-                player2.move(0.5, 0)  # Positive dx value moves character to the right
-            else:
-                player2.move(-0.5, 0)
+            player2.move(0.5, 0)  # Positive dx value moves character to the right
 
     for projectile in projectiles_to_remove:
         projectiles.remove(projectile)
@@ -232,8 +226,8 @@ while running:
             health_bar2.hp -= melee_damage
             print(health_bar2.hp)
             melee_attacking = False
-            init_vel2 = 1.5 
-            if init_vel2 > 0:
+            init_vel2 = 1.5
+            if (init_vel2 > 0):
                 player2.move(10, 0)
                 # might need to add acceleration to make more smooth
 
@@ -252,10 +246,8 @@ while running:
         pass
     if keys[pygame.K_RIGHT]:  # Move player2 to the right
         player2.move(2, 0)  # Positive dx value moves character to the right
-        player2.direction = 'right'
-    if keys[pygame.K_LEFT]:  # Move player2 to the left
+    if keys[pygame.K_LEFT] and not collision2_left:  # Move player2 to the left
         player2.move(-2, 0)  # Negative dx value moves character to the left
-        player2.direction = 'left'
 
     # Draw floor
     floor.draw(screen)

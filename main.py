@@ -203,6 +203,10 @@ def start_screen(screen):
 
 
 def champions_select(screen, num_players):
+    choose_your_character = Audio(0.25, 'music', False, screen, 'audio/ChooseYourCharacter.mp3')
+    choose_your_character_music = Audio(0.25, 'music', False, screen, 'audio/ChooseYourCharacterMusic.mp3')
+    e_honda = Audio(0.25, 'music', False, screen, 'audio/EHonda.mp3')
+
 
     screen.fill((0, 0, 0))
     champion_select_image = pygame.image.load("static/champion_select_image.png")
@@ -248,6 +252,7 @@ def champions_select(screen, num_players):
                     pos1 = [237, 'Champion2']
                 if champion_3_rectangle.collidepoint(event.pos):
                     pos1 = [335, 'Champion3']
+                    e_honda.play_music(0)
                 if champion_4_rectangle.collidepoint(event.pos):
                     pos1 = [430, 'Champion4']
                 if champion_5_rectangle.collidepoint(event.pos):
