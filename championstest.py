@@ -93,12 +93,12 @@ while running:
     # Physics
     # Check for collisions and apply gravity
     velocity = gravity * (time/60) - init_vel
-    print(velocity)
     if abs(velocity) > 10:
         velocity = 10 * (velocity / abs(velocity))
     player1.current_position = (player1.current_position[0], player1.current_position[1] + velocity * 4)
     time += 1
     if player1.current_position[1] + 40 >= floor.rect.y:
+        player1.current_position = (player1.current_position[0], floor.rect.y - 40)
         velocity = 0
         init_vel = 0
         time = 0
