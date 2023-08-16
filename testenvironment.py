@@ -152,6 +152,7 @@ while running:
         if event.type == pygame.QUIT:
             running = False
 
+    #use this concept for clouds
     # Decrement background_y to move the background up
     background_y -= 0.05
 
