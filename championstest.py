@@ -323,7 +323,7 @@ while running:
         # Draw a melee attack rectangle relative to player2's position
         melee_attack_rect2 = pygame.Rect(player2.current_position[0] + punch_reach2, player2.current_position[1],
                                          20, 20)
-        pygame.draw.rect(screen, (255, 0, 0), melee_attack_rect2)
+        pygame.draw.rect(screen, (0, 0, 255), melee_attack_rect2)
         if punch_dir2 == 'right':
             punch_reach2 = 0 - (l_cooldown * 2 - 240)
         else:
