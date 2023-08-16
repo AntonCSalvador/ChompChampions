@@ -80,6 +80,10 @@ init_vel = 0
 time = 0
 velocity = 0
 
+# skill cooldowns
+t_cooldown = 0
+punch_reach = 0
+
 
 running = True
 while running:
@@ -96,12 +100,12 @@ while running:
     # Physics
     # Check for collisions and apply gravity
     velocity = gravity * (time/60) - init_vel
-    print(velocity)
     if abs(velocity) > 10:
         velocity = 10 * (velocity / abs(velocity))
     player1.current_position = (player1.current_position[0], player1.current_position[1] + velocity * 4)
     time += 1
     if player1.current_position[1] + 40 >= floor.rect.y:
+        player1.current_position = (player1.current_position[0], floor.rect.y - 40)
         velocity = 0
         init_vel = 0
         time = 0
@@ -153,22 +157,31 @@ while running:
         projectiles.remove(projectile)
 
     # Melee attack
-    if keys[pygame.K_t]:
+    if keys[pygame.K_t] and t_cooldown == 0:
         melee_attacking = True
+        punch_reach = 0
+        t_cooldown = 120
 
     if melee_attacking:
         # Draw a melee attack rectangle relative to player1's position
-        melee_attack_rect = pygame.Rect(player1.current_position[0] + 40, player1.current_position[1], 40, 40)
+        melee_attack_rect = pygame.Rect(player1.current_position[0] + punch_reach, player1.current_position[1], 20, 20)
         pygame.draw.rect(screen, (255, 0, 0), melee_attack_rect)
+        punch_reach = 0 - (t_cooldown * 2 - 240)
 
         # Check for collision with player2
         if melee_attack_rect.colliderect(player2_rect):
-            projectiles_to_remove.append(projectile)
+            projectiles_to_remove.append(Projectile)
             print(health_bar1.hp)
             health_bar1.hp -= melee_damage
             print(health_bar1.hp)
+            melee_attacking = False
 
-        melee_attacking = False  # Reset melee_attacking flag
+        if t_cooldown < 110:
+            melee_attacking = False  # Reset melee_attacking flag
+            punch_reach = 0
+
+    if t_cooldown > 0:
+        t_cooldown -= 1
 
     # Player 2 movement
     if keys[pygame.K_UP]:  # Move player2 up in the y-axis
