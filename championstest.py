@@ -70,12 +70,19 @@ health_bar1 = HealthBar(10, 10, 300, 40, 100)
 
 projectiles = []  # List to store active projectiles
 
+melee_attacking = False
+melee_damage = 2
+
 # physics variables
 terminal_velocity = 15
 gravity = 2
 init_vel = 0
 time = 0
 velocity = 0
+
+# skill cooldowns
+t_cooldown = 0
+punch_reach = 0
 
 
 running = True
@@ -148,6 +155,33 @@ while running:
 
     for projectile in projectiles_to_remove:
         projectiles.remove(projectile)
+
+    # Melee attack
+    if keys[pygame.K_t] and t_cooldown == 0:
+        melee_attacking = True
+        punch_reach = 0
+        t_cooldown = 120
+
+    if melee_attacking:
+        # Draw a melee attack rectangle relative to player1's position
+        melee_attack_rect = pygame.Rect(player1.current_position[0] + punch_reach, player1.current_position[1], 20, 20)
+        pygame.draw.rect(screen, (255, 0, 0), melee_attack_rect)
+        punch_reach = 0 - (t_cooldown * 2 - 240)
+
+        # Check for collision with player2
+        if melee_attack_rect.colliderect(player2_rect):
+            projectiles_to_remove.append(Projectile)
+            print(health_bar1.hp)
+            health_bar1.hp -= melee_damage
+            print(health_bar1.hp)
+            melee_attacking = False
+
+        if t_cooldown < 110:
+            melee_attacking = False  # Reset melee_attacking flag
+            punch_reach = 0
+
+    if t_cooldown > 0:
+        t_cooldown -= 1
 
     # Player 2 movement
     if keys[pygame.K_UP]:  # Move player2 up in the y-axis
