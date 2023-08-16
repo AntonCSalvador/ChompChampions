@@ -10,11 +10,11 @@ class Player:
     def move(self, dx, dy):
         self.current_position = (self.current_position[0] + dx, self.current_position[1] + dy)
 
-    def draw(self):
-        print("hi")
+    def draw(self):  # needs to be updated or deleted in the future
+        pass
 
-    def update(self):
-        print("hi")
+    def update(self):  # needs to be updated or deleted in the future
+        pass
         # this.position.y += this.velocity
 
 
@@ -42,7 +42,7 @@ class Floor:
         pygame.draw.rect(surface, (0, 255, 0), self.rect)  # Green color for the ground
 
 
-class HealthBar():
+class HealthBar:
     def __init__(self, x, y, w, h, max_hp):
         self.x = x
         self.y = y
@@ -57,19 +57,21 @@ class HealthBar():
         pygame.draw.rect(surface, "red", (self.x, self.y, self.w, self.h))
         pygame.draw.rect(surface, "green", (self.x, self.y, self.w * ratio, self.h))
 
-class profPicture():
-    def __init__(self, x, y, w, h, imgPath):
+
+class ProfPicture:
+    def __init__(self, x, y, w, h, img_path):
         self.x = x
         self.y = y
         self.w = w
         self.h = h
-        self.image = pygame.image.load(imgPath)  # Load the image
+        self.image = pygame.image.load(img_path)  # Load the image
         self.image = pygame.transform.scale(self.image, (w, h))  # Scale the image to match the rectangle dimensions
 
     def draw(self, surface):
         pygame.draw.rect(surface, (255, 255, 255), (self.x, self.y, self.w, self.h))  # Draw the rectangle
         surface.blit(self.image, (self.x, self.y))  # Draw the image inside the rectangle
-        
+
+
 # Pygame initialization
 pygame.init()
 screen = pygame.display.set_mode((800, 600))
@@ -84,8 +86,12 @@ player2 = Player(400, 400, 'left')
 floor = Floor(0, 550, 800, 50)  # Creating a floor rectangle
 health_bar1 = HealthBar(50, 10, 300, 40, 100)
 health_bar2 = HealthBar(450, 10, 300, 40, 100)
-profilePicP1 = profPicture(5, 10, 40, 40, champ1Img)
-profilePicP2 = profPicture(755, 10, 40, 40, champ2Img)
+profilePicP1 = ProfPicture(5, 10, 40, 40, champ1Img)
+profilePicP2 = ProfPicture(755, 10, 40, 40, champ2Img)
+player1_rect = pygame.Rect(player1.current_position[0] - 20, player1.current_position[1], 40, 40)
+player2_rect = pygame.Rect(player2.current_position[0] - 20, player2.current_position[1], 40, 40)
+pygame.draw.rect(screen, (255, 0, 0), player1_rect)
+pygame.draw.rect(screen, (0, 0, 255), player2_rect)
 
 
 projectiles = []  # List to store active projectiles
@@ -93,7 +99,8 @@ projectiles = []  # List to store active projectiles
 melee_attacking = False
 melee_damage = 2
 
-# physics variables
+# all physics variables
+
 # physics variables for player1
 terminal_velocity1 = 15
 gravity1 = 2
@@ -108,13 +115,14 @@ init_vel2 = 0
 time2 = 0
 velocity2 = 0
 
-# skill cooldowns
+# skill cool_downs
 t_cooldown = 0
 punch_reach = 0
+punch_dir = 'right'
 
 # Load the background GIF image
 background_image = pygame.image.load("static/champions/testImg/testBackground.gif")
-background_image = pygame.transform.scale(background_image, (800, 600))  # Scale the image to match the screen dimensions
+background_image = pygame.transform.scale(background_image, (800, 600))  # Scale the image to match the screen dims
 
 
 running = True
@@ -133,10 +141,9 @@ while running:
     health_bar1.draw(screen)
     health_bar2.draw(screen)
 
-    #pfp
+    # pfp
     profilePicP1.draw(screen)
     profilePicP2.draw(screen)
-
 
     # Physics
     # Check for collisions and apply gravity
@@ -167,13 +174,14 @@ while running:
     # Move and draw player objects
     keys = pygame.key.get_pressed()
 
+    """
+    Player 1 attributes, abilities, movement, etc.
+    """
+
     # Player 1 movement
     if keys[pygame.K_w] and player1.current_position[1] + 40 >= floor.rect.y:
         init_vel1 = 0.5  # changes how high the player jumps
         time1 = 0
-    else:
-        pass
-
     if keys[pygame.K_d]:  # Move player1 to the right
         player1.move(2, 0)  # Positive dx value moves character to the right
         player1.direction = 'right'
@@ -215,6 +223,7 @@ while running:
 
     # Melee attack
     if keys[pygame.K_t] and t_cooldown == 0:
+        punch_dir = player1.direction
         melee_attacking = True
         punch_reach = 0
         t_cooldown = 120
@@ -223,7 +232,10 @@ while running:
         # Draw a melee attack rectangle relative to player1's position
         melee_attack_rect = pygame.Rect(player1.current_position[0] + punch_reach, player1.current_position[1], 20, 20)
         pygame.draw.rect(screen, (255, 0, 0), melee_attack_rect)
-        punch_reach = 0 - (t_cooldown * 2 - 240)
+        if punch_dir == 'right':
+            punch_reach = 0 - (t_cooldown * 2 - 240)
+        else:
+            punch_reach = -20 + (t_cooldown * 2 - 240)
 
         # Check for collision with player2
         if melee_attack_rect.colliderect(player2_rect):
@@ -234,7 +246,10 @@ while running:
             melee_attacking = False
             init_vel2 = 1.5 
             if init_vel2 > 0:
-                player2.move(10, 0)
+                if punch_dir == 'right':
+                    player2.move(10, 0)
+                else:
+                    player2.move(-10, 0)
                 # might need to add acceleration to make more smooth
 
         if t_cooldown < 110:
@@ -244,12 +259,14 @@ while running:
     if t_cooldown > 0:
         t_cooldown -= 1
 
+    """
+    Player 2 attributes, movement, and attacks
+    """
+
     # Player 2 movement
     if keys[pygame.K_UP] and player2.current_position[1] + 40 >= floor.rect.y:
         init_vel2 = 0.5  # changes how high the player jumps
         time2 = 0
-    else:
-        pass
     if keys[pygame.K_RIGHT]:  # Move player2 to the right
         player2.move(2, 0)  # Positive dx value moves character to the right
         player2.direction = 'right'
