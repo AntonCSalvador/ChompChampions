@@ -173,7 +173,7 @@ current_animation = idle_animation  # Start with idle animation
 current_frame_index = 0
 
 idle_mask = pygame.mask.from_surface(player1_frames[idle_animation[0]])
-idle_mask_image = idle_mask.to_surface()
+idle_mask_image = idle_mask.to_surface() #delete this later bc this is just to see the actual mask, ideally the mask is invisible
 previous_animation = None
 
 
@@ -254,6 +254,7 @@ while running:
     screen.blit(player1.current_frame, (player1.current_position[0] - (player1_size/2), player1.current_position[1] - (player1_size - 40)))
     player1_refresh -= 1
 
+    #this updates the mask to the current frame being used by the player
     if current_animation != previous_animation:
         idle_mask, idle_mask_image = update_mask(player1_frames[current_animation[current_frame_index]])
         previous_animation = current_animation
@@ -355,7 +356,6 @@ while running:
         pygame.draw.rect(screen, (255, 0, 0), melee_attack_rect)
         punch_reach = 0 - (t_cooldown * 2 - 240)
         print(current_animation)
-        current_frame_index = 0
         current_animation = thrust_animation
         current_frame_index = 0  # Reset the frame index for the new animation
 
