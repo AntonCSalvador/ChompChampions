@@ -216,6 +216,13 @@ punch_reach = 0
 background = pygame.image.load("static/champions/testImg/testBackground.gif")
 background = pygame.transform.scale(background, (800, 600))  # Scale the image to match the screen dimensions
 background_y = 0
+background_x = 450
+
+cloud = pygame.image.load("static/champions/testImg/cloud.png")
+cloudHeight = cloud.get_height()
+cloudWidth = cloud.get_width()
+print("Height: ", cloudHeight, " Width: ", cloudWidth)
+cloud = pygame.transform.scale(cloud, (300, 100))
 
 # Set the title of the game window
 pygame.display.set_caption("Chomp Champions")
@@ -234,6 +241,10 @@ while running:
     if background_y <= -background.get_height():
         background_y = 0
 
+    background_x -= 1
+    if background_x <= - 800:
+        background_x = 0
+
     player1_rect = pygame.Rect(player1.current_position[0] - 20, player1.current_position[1], 40, 40)
     pygame.draw.rect(screen, (255, 0, 0), player1_rect)
 
@@ -242,6 +253,8 @@ while running:
 
     # Draw the background at the current position
     screen.blit(background, (0, background_y))
+
+    screen.blit(cloud, (background_x, 60))
 
     # player1_rect = pygame.Rect(player1.current_position[0] - 20, player1.current_position[1], 40, 40)
     # pygame.draw.rect(screen, (255, 0, 0), player1_rect)
