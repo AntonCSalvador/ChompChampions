@@ -292,8 +292,12 @@ def champions_select(screen, num_players):
                 select_list.append(drawn_square)
                 select_list.pop(0)
                 screen.blit(champion_select_image, (0, 0))
-                screen.blit(back_button_surface, back_button_rectangle)
                 pygame.draw.rect(screen, select_color, select_list[0], 3)
+                if pos1[0] == 140:
+                    player1ChampionImg = "static/champions/testImg/XiJinDexter.png"
+                    player1Champion = champSelectPicture(10, 10, 200, 200, player1ChampionImg)
+                    player1Champion.draw(screen)
+                screen.blit(back_button_surface, back_button_rectangle)
                 if p1_lock > 0:
                     pygame.draw.rect(screen, (255, 0, 0), pygame.Rect((p1_lock, 445, 93, 113)), 3)
 

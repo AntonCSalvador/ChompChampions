@@ -167,13 +167,13 @@ animateFrames(player1_frames, player1Thrust)
 
 # Define animation sequences as lists of frame indices
 idle_animation = [0, 1, 2, 3]  # Example: idle animation frames
-walk_animation = [4, 5, 6, 7]  # Example: walking animation frames
-thrust_animation = [8, 9, 10, 11]
+walk_animation = [4, 5, 6, 7, 8, 9, 10, 11]  # Example: walking animation frames
+thrust_animation = [12, 13, 14, 15]
 current_animation = idle_animation  # Start with idle animation
 current_frame_index = 0
 
 idle_mask = pygame.mask.from_surface(player1_frames[idle_animation[0]])
-idle_mask_image = idle_mask.to_surface() #delete this later bc this is just to see the actual mask, ideally the mask is invisible
+idle_mask_image = idle_mask.to_surface()  # delete this later bc this is just to see the actual mask, ideally the mask is invisible
 previous_animation = None
 
 
@@ -192,6 +192,9 @@ init_vel1 = 0
 time1 = 0
 velocity1 = 0
 player1_refresh = 0
+t_collide = False
+t_up = False
+slide_frames = 10
 
 # physics variables for player2
 terminal_velocity2 = 15
@@ -240,8 +243,8 @@ while running:
     # Draw the background at the current position
     screen.blit(background, (0, background_y))
 
-    player1_rect = pygame.Rect(player1.current_position[0] - 20, player1.current_position[1], 40, 40)
-    pygame.draw.rect(screen, (255, 0, 0), player1_rect)
+    # player1_rect = pygame.Rect(player1.current_position[0] - 20, player1.current_position[1], 40, 40)
+    # pygame.draw.rect(screen, (255, 0, 0), player1_rect)
 
     # for basic animation
     # for basic animation
@@ -254,12 +257,18 @@ while running:
     screen.blit(player1.current_frame, (player1.current_position[0] - (player1_size/2), player1.current_position[1] - (player1_size - 40)))
     player1_refresh -= 1
 
+    # reset sword attack skill after hitting
+    if current_animation == thrust_animation:
+        if current_frame_index == 3:
+            current_frame_index = 0
+            current_animation = idle_animation
+
     #this updates the mask to the current frame being used by the player
     if current_animation != previous_animation:
         idle_mask, idle_mask_image = update_mask(player1_frames[current_animation[current_frame_index]])
         previous_animation = current_animation
     
-    screen.blit(idle_mask_image, (0, 0)) #this is just temporary to test looking at the mask
+    screen.blit(idle_mask_image, (player1.current_position[0] - 100, player1.current_position[1] - 160)) #this is just temporary to test looking at the mask
 
     # Health bars
     health_bar1.draw(screen)
@@ -309,9 +318,16 @@ while running:
         pass
 
     if keys[pygame.K_d] or keys[pygame.K_a]:
-        current_animation = walk_animation
+        if current_animation == thrust_animation:
+            pass
+        else:
+            current_animation = walk_animation
     else:
-        current_animation = idle_animation
+        if current_animation == thrust_animation:
+            pass
+        else:
+            current_frame_index = 0
+            current_animation = idle_animation
 
     if keys[pygame.K_d]:  # Move player1 to the right
         player1.move(2, 0)  # Positive dx value moves character to the right
@@ -348,16 +364,14 @@ while running:
         melee_attacking = True
         punch_reach = 0
         t_cooldown = 120
-        print(current_animation)
+        current_frame_index = 0  # Reset the frame index for the new animation
+        current_animation = thrust_animation
 
     if melee_attacking:
         # Draw a melee attack rectangle relative to player1's position
-        melee_attack_rect = pygame.Rect(player1.current_position[0] + punch_reach, player1.current_position[1], 20, 20)
-        pygame.draw.rect(screen, (255, 0, 0), melee_attack_rect)
-        punch_reach = 0 - (t_cooldown * 2 - 240)
-        print(current_animation)
-        current_animation = thrust_animation
-        current_frame_index = 0  # Reset the frame index for the new animation
+        melee_attack_rect = pygame.Rect(player1.current_position[0] + 50, player1.current_position[1] - 40, 100, 50)
+        #  pygame.draw.rect(screen, (255, 0, 0), melee_attack_rect)
+        punch_reach = 0 - (t_cooldown / 1.2 - 240)
 
         # Check for collision with player2
         if melee_attack_rect.colliderect(player2_rect):
@@ -366,14 +380,36 @@ while running:
             health_bar2.hp -= melee_damage
             print(health_bar2.hp)
             melee_attacking = False
-            init_vel2 = 1.5
-            if (init_vel2 > 0):
-                player2.move(10, 0)
-                # might need to add acceleration to make more smooth
+            current_frame_index = 0
+            t_collide = True
+            t_up = True
+            slide_frames = 10
 
         if t_cooldown < 110:
             melee_attacking = False  # Reset melee_attacking flag
             punch_reach = 0
+            current_animation = idle_animation
+            t_collide = False
+
+    if t_collide:
+        if t_up:
+            init_vel2 = 1
+            t_up = False
+        if player2.current_position[1] <= floor.rect.y - 41:
+            player2.move(2, 0)
+            print('player moved 5')
+        else:
+            slide_frames -= 1
+            if slide_frames > 6:
+                player2.move(2, 0)
+            elif slide_frames > 3:
+                player2.move(1, 0)
+            elif slide_frames > 0:
+                player2.move(0.5, 0)
+            else:
+                t_collide = False
+
+
 
     if t_cooldown > 0:
         t_cooldown -= 1
