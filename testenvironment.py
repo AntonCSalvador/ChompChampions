@@ -197,8 +197,8 @@ while running:
     if background_y <= -background.get_height():
         background_y = 0
 
-    # player1_rect = pygame.Rect(player1.current_position[0] - 20, player1.current_position[1], 40, 40)
-    # pygame.draw.rect(screen, (255, 0, 0), player1_rect)
+    player1_rect = pygame.Rect(player1.current_position[0] - 20, player1.current_position[1], 40, 40)
+    pygame.draw.rect(screen, (255, 0, 0), player1_rect)
 
     # Clear the screen
     screen.fill((0, 0, 0))
@@ -206,13 +206,13 @@ while running:
     # Draw the background at the current position
     screen.blit(background, (0, background_y))
 
-    player1_rect = pygame.Rect(player1.current_position[0] - 20, player1.current_position[1], 80, 80)
-    pygame.draw.rect(screen, (255, 0, 0), player1_rect)
+    # player1_rect = pygame.Rect(player1.current_position[0] - 20, player1.current_position[1], 40, 40)
+    # pygame.draw.rect(screen, (255, 0, 0), player1_rect)
 
     #for basic animation
     #for basic animation
     current_frame = player1_frames[current_animation[current_frame_index]]
-    player1.current_frame = pygame.transform.scale(current_frame, (80, 80))  # Adjust size as needed
+    player1.current_frame = pygame.transform.scale(current_frame, (40, 40))  # Adjust size as needed
     current_frame_index = (current_frame_index + 1) % len(current_animation)
     screen.blit(player1.current_frame, player1.current_position)
 
@@ -236,8 +236,8 @@ while running:
         velocity1 = 10 * (velocity1 / abs(velocity1))
     player1.current_position = (player1.current_position[0], player1.current_position[1] + velocity1 * 4)
     time1 += 1
-    if player1.current_position[1] + 80 >= floor.rect.y:
-        player1.current_position = (player1.current_position[0], floor.rect.y - 80)
+    if player1.current_position[1] + 40 >= floor.rect.y:
+        player1.current_position = (player1.current_position[0], floor.rect.y - 40)
         velocity1 = 0
         init_vel1 = 0
         time1 = 0
