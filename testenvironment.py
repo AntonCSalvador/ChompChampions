@@ -56,6 +56,7 @@ class HealthBar():
         pygame.draw.rect(surface, "red", (self.x, self.y, self.w, self.h))
         pygame.draw.rect(surface, "green", (self.x, self.y, self.w * ratio, self.h))
 
+
 class profPicture():
     def __init__(self, x, y, w, h, imgPath):
         self.x = x
@@ -69,6 +70,7 @@ class profPicture():
         pygame.draw.rect(surface, (255, 255, 255), (self.x, self.y, self.w, self.h))  # Draw the rectangle
         surface.blit(self.image, (self.x, self.y))  # Draw the image inside the rectangle
 
+
 class inGameTimer():
     def __init__(self, x, y, w, h):
         self.x = x
@@ -76,7 +78,6 @@ class inGameTimer():
         self.w = w
         self.h = h
         self.remaining_time = 90  # Initialize the remaining time to 90 seconds
-
 
     def draw(self, surface):
         pygame.draw.rect(surface, (255, 255, 255), (self.x, self.y, self.w, self.h))  # Draw the rectangle
@@ -86,12 +87,13 @@ class inGameTimer():
         text = font.render(str(round(self.remaining_time)), True, (0, 0, 0))
         text_rect = text.get_rect(center=(self.x + self.w // 2, self.y + self.h // 2))
         surface.blit(text, text_rect)
-        
+
         self.remaining_time -= 0.01  # Decrease the remaining time by 1 each frame
 
         if self.remaining_time <= 0:
             self.remaining_time = 0  # Reset the timer if it goes below 0
             return self.remaining_time
+
 
 # Pygame initialization
 pygame.init()
@@ -138,16 +140,13 @@ for y in range(0, player1Walk.get_height(), frame_height):
         frame = player1Walk.subsurface(pygame.Rect(x, y, frame_width, frame_height))
         player1_frames.append(frame)
 
-
 # Define animation sequences as lists of frame indices
 idle_animation = [0, 1, 2, 3]  # Example: idle animation frames
 walk_animation = [4, 5, 6, 7]  # Example: walking animation frames
 current_animation = idle_animation  # Start with idle animation
 current_frame_index = 0
 
-
-
-timer = inGameTimer(365, 10,70, 40)
+timer = inGameTimer(365, 10, 70, 40)
 
 projectiles = []  # List to store active projectiles
 
@@ -161,6 +160,7 @@ gravity1 = 2
 init_vel1 = 0
 time1 = 0
 velocity1 = 0
+player1_refresh = 0
 
 # physics variables for player2
 terminal_velocity2 = 15
@@ -175,7 +175,7 @@ punch_reach = 0
 
 # Load the background GIF image
 # background_image = pygame.image.load("static/champions/testImg/testBackground.gif")
-# background_image = pygame.transform.scale(background_image, (800, 600))  
+# background_image = pygame.transform.scale(background_image, (800, 600))
 # Scale the image to match the screen dimensions
 
 # Load the background image
@@ -189,7 +189,7 @@ while running:
         if event.type == pygame.QUIT:
             running = False
 
-    #use this concept for clouds
+    # use this concept for clouds
     # Decrement background_y to move the background up
     background_y -= 0.05
 
@@ -206,26 +206,29 @@ while running:
     # Draw the background at the current position
     screen.blit(background, (0, background_y))
 
-    # player1_rect = pygame.Rect(player1.current_position[0] - 20, player1.current_position[1], 40, 40)
-    # pygame.draw.rect(screen, (255, 0, 0), player1_rect)
+    player1_rect = pygame.Rect(player1.current_position[0] - 20, player1.current_position[1], 40, 40)
+    pygame.draw.rect(screen, (255, 0, 0), player1_rect)
 
-    #for basic animation
-    #for basic animation
+    # for basic animation
+    # for basic animation
     current_frame = player1_frames[current_animation[current_frame_index]]
-    player1.current_frame = pygame.transform.scale(current_frame, (40, 40))  # Adjust size as needed
-    current_frame_index = (current_frame_index + 1) % len(current_animation)
-    screen.blit(player1.current_frame, player1.current_position)
-
+    player1_size = 400
+    player1.current_frame = pygame.transform.scale(current_frame, (player1_size, player1_size))  # Adjust size as needed
+    if player1_refresh == 0:
+        current_frame_index = (current_frame_index + 1) % len(current_animation)
+        player1_refresh = 5
+    screen.blit(player1.current_frame, (player1.current_position[0] - (player1_size/2), player1.current_position[1] - (player1_size - 40)))
+    player1_refresh -= 1
 
     # Health bars
     health_bar1.draw(screen)
     health_bar2.draw(screen)
 
-    #pfp
+    # pfp
     profilePicP1.draw(screen)
     profilePicP2.draw(screen)
 
-    #timer
+    # timer
     timer.draw(screen)
 
     # Physics
@@ -318,10 +321,10 @@ while running:
             health_bar2.hp -= melee_damage
             print(health_bar2.hp)
             melee_attacking = False
-            init_vel2 = 1.5 
-            if(init_vel2 > 0):
-                player2.move(10,0)
-                #might need to add acceleration to make more smooth
+            init_vel2 = 1.5
+            if (init_vel2 > 0):
+                player2.move(10, 0)
+                # might need to add acceleration to make more smooth
 
         if t_cooldown < 110:
             melee_attacking = False  # Reset melee_attacking flag
