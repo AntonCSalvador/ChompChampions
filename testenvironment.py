@@ -20,7 +20,7 @@ class Player:
 # def animate():
 #     requestAnimationFrame(animate)
 
-class Projectile:
+class Projectile:  # pee proj
     def __init__(self, x, y, velocity):
         self.start_position = (x, y)
         self.current_position = self.start_position
