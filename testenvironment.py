@@ -94,6 +94,19 @@ class inGameTimer():
             self.remaining_time = 0  # Reset the timer if it goes below 0
             return self.remaining_time
 
+def animateFrames(framesArray, frameDesc):
+    for y in range(0, frameDesc.get_height(), frame_height):
+        for x in range(0, frameDesc.get_width(), frame_width):
+            frame = frameDesc.subsurface(pygame.Rect(x, y, frame_width, frame_height))
+            framesArray.append(frame)
+
+def update_mask(image):
+    mask = pygame.mask.from_surface(image)
+    mask_image = mask.to_surface()
+    transparent_color = (0, 0, 0, 0)  # Set the transparent color (RGBA: 0, 0, 0, 0)
+    mask_image.set_colorkey(transparent_color)
+    return mask, mask_image
+
 
 # Pygame initialization
 pygame.init()
@@ -113,6 +126,7 @@ profilePicP1 = profPicture(5, 10, 40, 40, champ1Img)
 profilePicP2 = profPicture(755, 10, 40, 40, champ2Img)
 player1Idle = pygame.image.load("static/champions/Martial Hero 2/Sprites/IdleTest.png")
 player1Walk = pygame.image.load("static/champions/Martial Hero 2/Sprites/RunTest.png")
+player1Thrust = pygame.image.load("static/champions/Martial Hero 2/Sprites/Attack1Floor.png")
 
 # Get the dimensions of the sprite sheet images
 idle_sheet_width = player1Idle.get_width()
@@ -121,9 +135,14 @@ idle_sheet_height = player1Idle.get_height()
 walk_sheet_width = player1Walk.get_width()
 walk_sheet_height = player1Walk.get_height()
 
+thrust_sheet_height = player1Thrust.get_height()
+thrust_sheet_width = player1Thrust.get_width()
+
 # Print the dimensions
 print("Player1 Idle Sprite Sheet Dimensions:", idle_sheet_width, "x", idle_sheet_height)
 print("Player1 Walk Sprite Sheet Dimensions:", walk_sheet_width, "x", walk_sheet_height)
+print("Player1 Walk Sprite Sheet Dimensions:", thrust_sheet_width, "x", thrust_sheet_height)
+
 
 # Define the dimensions of each frame in the sprite sheet
 frame_width = 200
@@ -131,20 +150,32 @@ frame_height = 200
 
 # Create a list to store the individual frames
 player1_frames = []
-for y in range(0, player1Idle.get_height(), frame_height):
-    for x in range(0, player1Idle.get_width(), frame_width):
-        frame = player1Idle.subsurface(pygame.Rect(x, y, frame_width, frame_height))
-        player1_frames.append(frame)
-for y in range(0, player1Walk.get_height(), frame_height):
-    for x in range(0, player1Walk.get_width(), frame_width):
-        frame = player1Walk.subsurface(pygame.Rect(x, y, frame_width, frame_height))
-        player1_frames.append(frame)
+
+#turn into function
+animateFrames(player1_frames, player1Idle)
+animateFrames(player1_frames, player1Walk)
+animateFrames(player1_frames, player1Thrust)
+
+# for y in range(0, player1Idle.get_height(), frame_height):
+#     for x in range(0, player1Idle.get_width(), frame_width):
+#         frame = player1Idle.subsurface(pygame.Rect(x, y, frame_width, frame_height))
+#         player1_frames.append(frame)
+# for y in range(0, player1Thrust.get_height(), frame_height):
+#     for x in range(0, player1Thrust.get_width(), frame_width):
+#         frame = player1Thrust.subsurface(pygame.Rect(x, y, frame_width, frame_height))
+#         player1_frames.append(frame)
 
 # Define animation sequences as lists of frame indices
 idle_animation = [0, 1, 2, 3]  # Example: idle animation frames
 walk_animation = [4, 5, 6, 7]  # Example: walking animation frames
+thrust_animation = [8, 9, 10, 11]
 current_animation = idle_animation  # Start with idle animation
 current_frame_index = 0
+
+idle_mask = pygame.mask.from_surface(player1_frames[idle_animation[0]])
+idle_mask_image = idle_mask.to_surface()
+previous_animation = None
+
 
 timer = inGameTimer(365, 10, 70, 40)
 
@@ -183,6 +214,9 @@ background = pygame.image.load("static/champions/testImg/testBackground.gif")
 background = pygame.transform.scale(background, (800, 600))  # Scale the image to match the screen dimensions
 background_y = 0
 
+# Set the title of the game window
+pygame.display.set_caption("Chomp Champions")
+
 running = True
 while running:
     for event in pygame.event.get():
@@ -219,6 +253,12 @@ while running:
         player1_refresh = 5
     screen.blit(player1.current_frame, (player1.current_position[0] - (player1_size/2), player1.current_position[1] - (player1_size - 40)))
     player1_refresh -= 1
+
+    if current_animation != previous_animation:
+        idle_mask, idle_mask_image = update_mask(player1_frames[current_animation[current_frame_index]])
+        previous_animation = current_animation
+    
+    screen.blit(idle_mask_image, (0, 0)) #this is just temporary to test looking at the mask
 
     # Health bars
     health_bar1.draw(screen)
@@ -307,12 +347,17 @@ while running:
         melee_attacking = True
         punch_reach = 0
         t_cooldown = 120
+        print(current_animation)
 
     if melee_attacking:
         # Draw a melee attack rectangle relative to player1's position
         melee_attack_rect = pygame.Rect(player1.current_position[0] + punch_reach, player1.current_position[1], 20, 20)
         pygame.draw.rect(screen, (255, 0, 0), melee_attack_rect)
         punch_reach = 0 - (t_cooldown * 2 - 240)
+        print(current_animation)
+        current_frame_index = 0
+        current_animation = thrust_animation
+        current_frame_index = 0  # Reset the frame index for the new animation
 
         # Check for collision with player2
         if melee_attack_rect.colliderect(player2_rect):
