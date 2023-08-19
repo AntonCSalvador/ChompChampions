@@ -265,7 +265,7 @@ def champions_select(screen, num_players):
                     pos1 = [140, 'Champion1']
                     xijinDex.play_music(0)
                     player1ChampionImg = "static/champions/testImg/XiJinDexter.png"
-                    player1Champion = champSelectPicture(10, 10, 200, 200, player1ChampionImg)
+                    player1Champion = champSelectPicture(0, 2, 625, 378, player1ChampionImg)
                     player1Champion.draw(screen)
                 if champion_2_rectangle.collidepoint(event.pos):
                     pos1 = [237, 'Champion2']
@@ -295,8 +295,9 @@ def champions_select(screen, num_players):
                 pygame.draw.rect(screen, select_color, select_list[0], 3)
                 if pos1[0] == 140:
                     player1ChampionImg = "static/champions/testImg/XiJinDexter.png"
-                    player1Champion = champSelectPicture(10, 10, 200, 200, player1ChampionImg)
+                    player1Champion = champSelectPicture(0, 2, 625, 378, player1ChampionImg)
                     player1Champion.draw(screen)
+                    characterNum = 0 #this is for the json scan later
                 screen.blit(back_button_surface, back_button_rectangle)
                 if p1_lock > 0:
                     pygame.draw.rect(screen, (255, 0, 0), pygame.Rect((p1_lock, 445, 93, 113)), 3)

@@ -1,11 +1,47 @@
 [{
-    "name": "John Doe",
-    "age": 30,
-    "city": "New York"
+    "name": "Basic Character",
+    "pfp": "static/champions/testImg/dexHead.png",
+    "rectangleWidth": 20,
+    "rectangleHeight": 20,
+    "gravityOrWeightWhicheverWeChoose": 20, 
+    "Damage1": 2,
+    "Damage2": 30,
+    "Damage3": 40,
+    "Damage4": 20,
+    "maybeDoAbilities^^^andStringSOmehow": 10,
+    "animationDirectory": "Martial Hero 2",
+    "health": 100,    
+    "movementSpeed": 5
 },
 {
-    "name": "Doe John",
-    "age": 20,
-    "city": "LA"
+    "name": "Xi Jin Dexter",
+    "pfp": "static/champions/testImg/dexHead.png",
+    "rectangleWidth": 20,
+    "rectangleHeight": 20,
+    "gravityOrWeightWhicheverWeChoose": 20, 
+    "Damage1": 20,
+    "Damage2": 30,
+    "Damage3": 40,
+    "Damage4": 20,
+    "maybeDoAbilities^^^andStringSOmehow": 10,
+    "animationDirectory": "history",
+    "health": 100,    
+    "movementSpeed": 5
+},
+{
+    "name": "E Honda",
+    "pfp": "static/champions/testImg/dexHead.png",
+    "rectangleWidth": 20,
+    "rectangleHeight": 20,
+    "gravityOrWeightWhicheverWeChoose": 20, 
+    "Damage1": 20,
+    "Damage2": 30,
+    "Damage3": 40,
+    "Damage4": 20,
+    "maybeDoAbilities^^^andStringSOmehow": 10,
+    "animationDirectory": "chem",
+    "health": 100,    
+    "movementSpeed": 5
 }
 ]
+

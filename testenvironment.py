@@ -1,5 +1,16 @@
 import pygame
+import json
 
+# Open and read the JSON file
+with open('testFrames.json', 'r') as json_file:
+    data = json.load(json_file)
+testChamp = data[0]
+
+pfp = testChamp['pfp']
+rDamage = testChamp['Damage1']
+tDamage = testChamp['Damage2']
+health1 = testChamp['health']
+animationDirectoryP1 = testChamp['animationDirectory']
 
 class Player:
     def __init__(self, x, y):
@@ -114,19 +125,19 @@ screen = pygame.display.set_mode((800, 600))
 clock = pygame.time.Clock()
 
 champ1Img = "static/champions/testImg/transparentDex.png"
-champ2Img = "static/champions/testImg/dexHead.png"
+champ2Img = pfp
 
 # Create player objects and a Floor object
 player1 = Player(100, 400)
 player2 = Player(400, 400)
 floor = Floor(0, 550, 800, 50)  # Creating a floor rectangle
-health_bar1 = HealthBar(50, 10, 300, 40, 100)
+health_bar1 = HealthBar(50, 10, 300, 40, health1)
 health_bar2 = HealthBar(450, 10, 300, 40, 100)
 profilePicP1 = profPicture(5, 10, 40, 40, champ1Img)
 profilePicP2 = profPicture(755, 10, 40, 40, champ2Img)
-player1Idle = pygame.image.load("static/champions/Martial Hero 2/Sprites/IdleTest.png")
-player1Walk = pygame.image.load("static/champions/Martial Hero 2/Sprites/RunTest.png")
-player1Thrust = pygame.image.load("static/champions/Martial Hero 2/Sprites/Attack1Floor.png")
+player1Idle = pygame.image.load("static/champions/"+ animationDirectoryP1 + "/Sprites/IdleTest.png")
+player1Walk = pygame.image.load("static/champions/"+ animationDirectoryP1 +"/Sprites/RunTest.png")
+player1Thrust = pygame.image.load("static/champions/"+ animationDirectoryP1 +"/Sprites/Attack1Floor.png")
 
 # Get the dimensions of the sprite sheet images
 idle_sheet_width = player1Idle.get_width()
@@ -294,6 +305,20 @@ while running:
     # timer
     timer.draw(screen)
 
+    fpsFont = pygame.font.Font(None, 36)
+
+    # Calculate FPS
+    fps = int(clock.get_fps())
+
+    # Render FPS text
+    fps_text = fpsFont.render(f"FPS: {fps}", True, (255, 255, 255))  # White text color
+
+    # Get the rect for the text
+    fps_rect = fps_text.get_rect(topright=(800, 0))  # Adjust the position as needed
+
+    # Draw FPS text
+    screen.blit(fps_text, fps_rect)
+
     # Physics
     # Check for collisions and apply gravity
     # Physics for player1
@@ -365,7 +390,7 @@ while running:
                     projectile.current_position)):  # Check both rect collision and point collision
             projectiles_to_remove.append(projectile)
             print(health_bar2.hp)
-            health_bar2.hp = health_bar2.hp - 1
+            health_bar2.hp = health_bar2.hp - rDamage
             print(health_bar2.hp)
             player2.move(0.5, 0)  # Positive dx value moves character to the right
 
@@ -390,7 +415,7 @@ while running:
         if melee_attack_rect.colliderect(player2_rect):
             projectiles_to_remove.append(Projectile)
             print(health_bar2.hp)
-            health_bar2.hp -= melee_damage
+            health_bar2.hp -= tDamage
             print(health_bar2.hp)
             melee_attacking = False
             current_frame_index = 0

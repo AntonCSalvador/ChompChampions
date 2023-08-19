@@ -8,8 +8,8 @@ second_info = data[1]
 
 # Access the values in the JSON data
 name = second_info['name']
-age = second_info['age']
-city = second_info['city']
+age = second_info['pfp']
+city = second_info['rectangleWidth']
 
 # Print the values
 print(f"Name: {name}")
