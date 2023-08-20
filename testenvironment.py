@@ -128,8 +128,8 @@ champ1Img = "static/champions/testImg/transparentDex.png"
 champ2Img = pfp
 
 # Create player objects and a Floor object
-player1 = Player(100, 400)
-player2 = Player(400, 400)
+player1 = Player(100, 400) #spawnpoint P1
+player2 = Player(400, 400) #spawnpoint P2
 floor = Floor(0, 550, 800, 50)  # Creating a floor rectangle
 health_bar1 = HealthBar(50, 10, 300, 40, health1)
 health_bar2 = HealthBar(450, 10, 300, 40, 100)

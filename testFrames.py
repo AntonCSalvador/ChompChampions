@@ -29,4 +29,15 @@ print(f"City: {city}")
 
 # source_file.py
 
+#this is how we could store the moveset lol but kinda troll but works
+code = """
+def greet(name):
+    print(f"Hello, {name}!")
+print("hello world")
+"""
+
+exec(code)
+
+# greet("Alice")
+
 variable_to_transfer = 42
