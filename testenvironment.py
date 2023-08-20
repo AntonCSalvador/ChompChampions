@@ -12,6 +12,7 @@ tDamage = testChamp['Damage2']
 health1 = testChamp['health']
 animationDirectoryP1 = testChamp['animationDirectory']
 
+
 class Player:
     def __init__(self, x, y):
         self.start_position = (x, y)
@@ -192,6 +193,7 @@ timer = inGameTimer(365, 10, 70, 40)
 
 projectiles = []  # List to store active projectiles
 
+draw_custom_rectangle = False
 melee_attacking = False
 melee_damage = 2
 
@@ -455,11 +457,16 @@ while running:
     # history major spawn
     if keys[pygame.K_z]:
         draw_custom_rectangle = True
-            # Draw the custom rectangle if the flag is set
-        custom_rect_x = player1_rect.right + 10  # Position it to the right of player1_rect
+        custom_rect_x = player1_rect.right + 10
+
+    if draw_custom_rectangle:
+        custom_rect_x += 1  # Position it to the right of player1_rect
         custom_rect_y = player1_rect.top
-        custom_rect = pygame.Rect(custom_rect_x, custom_rect_y, 40, 40)  # Create the custom rectangle
+        custom_rect = pygame.Rect(custom_rect_x, floor.rect.y - 40, 40, 40)  # Create the custom rectangle
         pygame.draw.rect(screen, (255, 0, 0), custom_rect)  # Draw the custom rectangle
+        if custom_rect_x > 800:
+            draw_custom_rectangle = False
+
 
     # Player 2 movement
     if keys[pygame.K_UP] and player2.current_position[1] + 40 >= floor.rect.y:
