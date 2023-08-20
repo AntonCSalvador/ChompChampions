@@ -452,6 +452,15 @@ while running:
     if t_cooldown > 0:
         t_cooldown -= 1
 
+    # history major spawn
+    if keys[pygame.K_z]:
+        draw_custom_rectangle = True
+            # Draw the custom rectangle if the flag is set
+        custom_rect_x = player1_rect.right + 10  # Position it to the right of player1_rect
+        custom_rect_y = player1_rect.top
+        custom_rect = pygame.Rect(custom_rect_x, custom_rect_y, 40, 40)  # Create the custom rectangle
+        pygame.draw.rect(screen, (255, 0, 0), custom_rect)  # Draw the custom rectangle
+
     # Player 2 movement
     if keys[pygame.K_UP] and player2.current_position[1] + 40 >= floor.rect.y:
         init_vel2 = 0.5  # changes how high the player jumps

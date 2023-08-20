@@ -36,6 +36,12 @@ def greet(name):
 print("hello world")
 """
 
+player1Projectile = """
+def greet(name):
+    print(f"Hello, {name}!")
+print("hello world")
+"""
+
 exec(code)
 
 # greet("Alice")
